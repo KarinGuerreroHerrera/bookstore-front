@@ -38,20 +38,20 @@ export default function CrearUsuario() {
       <h1>Crear usuarios</h1>
       <form onSubmit={enviarFormulario} aria-label="Formulario crear usuario">
         <div>
-          <label>Nombre</label>
-          <input type="text" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={error ? "true" : "false"} />
+          <label htmlFor="name">Nombre</label>
+          <input id="name" type="text" value={name} onChange={(e) => setName(e.target.value)} aria-invalid={error ? "true" : "false"} />
         </div>
         <div>
-          <label>Fecha de nacimiento</label>
-          <input type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} aria-invalid={error ? "true" : "false"} />
+          <label htmlFor="birthDate">Fecha de nacimiento</label>
+          <input id="birthDate" type="date" value={birthDate} onChange={(e) => setBirthDate(e.target.value)} aria-invalid={error ? "true" : "false"} />
+        </div>  
+        <div>
+          <label htmlFor="description">Descripción</label>
+          <textarea id="description" value={description} onChange={(e) => setDescription(e.target.value)} aria-invalid={error ? "true" : "false"} />
         </div>
         <div>
-          <label>Descripción</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} aria-invalid={error ? "true" : "false"} />
-        </div>
-        <div>
-          <label>Imagen</label>
-          <input type="text" value={image} onChange={(e) => setImage(e.target.value)} aria-invalid={error ? "true" : "false"} />
+          <label htmlFor="image">Imagen</label>
+          <input id="image" type="text" value={image} onChange={(e) => setImage(e.target.value)} aria-invalid={error ? "true" : "false"} />
         </div>
         {error && <p role="alert">{error}</p>}
         <button type="submit">Crear usuario</button>
