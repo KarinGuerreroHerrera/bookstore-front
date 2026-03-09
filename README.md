@@ -1,36 +1,11 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
-
-## Getting Started
-
-First, run the development server:
-
-```bash
+### 1. Para probar
+cd bookstore-front
+npm install
+### 2. Ejecutar la aplicación
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Abrir [http://localhost:3000](http://localhost:3000) en el navegador.
+### 3. Ejecutar las pruebas
+npm test
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Cambios
+Se usó un  `AuthorsContext` con `createContext` y `useReducer` de React para que los datos de los autores no se pierdan al cambiar de página. Este contexto envuelve toda la aplicación desde `layout.js`, así cualquier componente puede acceder y modificar la información de los autores. El filtro de autores se hizo dentro del componente de la lista (`/authors`). Solo se usa un estado llamado `query` para guardar lo que escribe el usuario. Luego, en el renderizado, se aplica `.filter()` a la lista de autores y se compara el texto usando `.toLowerCase()` para que el filtro funcione sin importar si las letras son mayúsculas o minúsculas. Esto evita tener que crear otro estado para la lista filtrada.

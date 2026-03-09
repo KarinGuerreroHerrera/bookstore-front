@@ -1,4 +1,5 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
 import CrearUsuario from '../app/crear/page'
 
 jest.mock('next/navigation', () => ({
@@ -11,26 +12,64 @@ jest.mock('../app/context/AuthorsContext', () => ({
 
 const setup = () => {
   render(<CrearUsuario />)
-
-  const heading = screen.getByRole('heading', { name: /crear usuarios/i })
-  const nameInput = screen.getByLabelText(/nombre/i)
-  const fechaInput = screen.getByLabelText(/fecha de nacimiento/i)
-  const descInput = screen.getByLabelText(/descripción/i)
-  const imgInput = screen.getByLabelText(/imagen/i)
-  const submitBtn = screen.getByRole('button', { name: /crear usuario/i })
-
-  return { heading, nameInput, fechaInput, descInput, imgInput, submitBtn }
+  return {
+    user: userEvent.setup(),
+    nameInput: screen.getByLabelText(/nombre/i),
+    fechaInput: screen.getByLabelText(/fecha de nacimiento/i),
+    descInput: screen.getByLabelText(/descripción/i),
+    imgInput: screen.getByLabelText(/imagen/i),
+    submitBtn: screen.getByRole('button', { name: /crear usuario/i }),
+  }
 }
 
-describe('Render inicial de /crear', () => {
-  test('renderiza el título, todos los campos y el botón', () => {
-    const { heading, nameInput, fechaInput, descInput, imgInput, submitBtn } = setup()
+describe('Formulario de creación de autor', () => {
 
-    expect(heading).toBeInTheDocument()
+  test('renderiza correctamente los campos del formulario', () => {
+    const { nameInput, fechaInput, descInput, imgInput } = setup()
     expect(nameInput).toBeInTheDocument()
     expect(fechaInput).toBeInTheDocument()
     expect(descInput).toBeInTheDocument()
     expect(imgInput).toBeInTheDocument()
-    expect(submitBtn).toBeInTheDocument()
   })
+
+  test('el botón inicia deshabilitado', () => {
+    const { submitBtn } = setup()
+    expect(submitBtn).toBeDisabled()
+  })
+
+  test('muestra mensaje de error si se envía el formulario vacío', async () => {
+    render(<CrearUsuario />)
+    const form = screen.getByRole('form', { name: /formulario crear usuario/i })
+    fireEvent.submit(form)
+    expect(await screen.findByRole('alert')).toHaveTextContent(/todos los campos son obligatorios/i)
+  })
+
+  test('el botón permanece deshabilitado con datos incompletos', async () => {
+    const { user, nameInput, submitBtn } = setup()
+    await user.type(nameInput, 'Solo nombre')
+    expect(submitBtn).toBeDisabled()
+  })
+
+  test('el botón se habilita cuando todos los campos tienen datos', async () => {
+    const { user, nameInput, fechaInput, descInput, imgInput, submitBtn } = setup()
+    await user.type(nameInput, 'Stephen King')
+    await user.type(fechaInput, '1947-09-21')
+    await user.type(descInput, 'Escritor de novelas de terror')
+    await user.type(imgInput, 'https://imagen.com/stephen.jpg')
+    expect(submitBtn).not.toBeDisabled()
+  })
+
+  test('los errores desaparecen cuando el formulario se completa correctamente', async () => {
+    const { user, nameInput, fechaInput, descInput, imgInput } = setup()
+    render(<CrearUsuario />)
+    const form = screen.getAllByRole('form', { name: /formulario crear usuario/i })[0]
+    fireEvent.submit(form)
+    expect(await screen.findAllByRole('alert')).not.toHaveLength(0)
+    await user.type(nameInput, 'Stephen King')
+    await user.type(fechaInput, '1947-09-21')
+    await user.type(descInput, 'Autor famoso')
+    await user.type(imgInput, 'https://imagen.com')
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
 })
